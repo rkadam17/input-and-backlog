@@ -1,0 +1,35 @@
+Select
+
+mso.[Brand_Identifier] as "Brand (M)"
+ ,cast(eb.[ReportingDate] as date) as "Calendar Day"
+--,"0CALYEAR" as "Calendar Year"
+--,"0CALMONTH" as "Calendar Year Month"
+,eb.[VBAK_CompanyCode] as "Company Code"
+,eb.[VBAP_Division] as "Division (Item)"
+,eb.[VBAP_Material] as "Material"
+,mso.[Material_Description] as "Mat Desc"
+,mso.[Product_Class_Description] as "Product Class Desc (M)"
+,mso.[Product_Family_Description] as "Product Family Desc (M)"
+,mso.[Product_Group_Description] as "Product Group Desc (M)"
+,mso.[Product_Line_Description] as "Product Line Desc (M)"
+,cm.[Name_1] as "Sold To Party Desc"
+,eb.[VBAK_Soldtoparty] as "Sold To Party"
+,eb.[TotalPastDue_USD] as "Past Due $"
+,eb.[PastDueQty] as "Past Due Qty"
+,eb.[TotalBacklog_USD] as "Total Backlog $"
+--,"TOT_BKLG_MARGIN" as "Total Backlog Margin"
+,eb.[TotalBacklogQty] as "Total Backlog Qty"
+,eb.[VBAP_SalesDocument] as "Sales Doc"
+,eb.[VBAP_SalesItem] as "SO Item"
+,eb.[vbap_curprmshipdate] as "Cust Prm Ship Date"
+,eb.[vbap_custreqdate] as "Cust Requested Date"
+,eb.[VBAP_ProShipDate] as "Pro Ship Date"
+
+from [cur_mas].[ErptFactBacklog] eb
+left join [cur_mdm].[DimMaterialSalesOrg] mso
+on mso.[Sales_Organization]+mso.[Material] = eb.[VBAK_SalesOrg]+eb.[VBAP_Material]
+left join [cur_mdm].[DimCustomerMaster] cm
+on cm.[Customer_Number] = eb.[VBAK_Soldtoparty]
+
+where eb.[VBAK_CompanyCode] in ('C510','C550') and eb.[ReportingDate] > '01/01/2020' 
+--and eb.[VBAP_SalesDocument] ='0119112943' and eb.[VBAP_SalesItem] = '000010'
